@@ -1,0 +1,20 @@
+#!/bin/bash
+
+SU=""
+[ "$USER" != "root" ] && SU="sudo "
+
+BASEDIR="`dirname $0`/.."
+. $BASEDIR/scripts/settings.sh
+. $BASEDIR/scripts/functions
+
+cd $BASEDIR
+BASEDIR=`pwd`
+
+MOUNTPOINT="$BASEDIR/tmp/mnt"
+
+mapped=`mount | grep $MOUNTPOINT | awk '{ print $1; }'`
+
+$SU umount $MOUNTPOINT 2> /dev/null
+
+$SU kpartx -d $DISK
+

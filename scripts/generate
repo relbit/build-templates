@@ -1,0 +1,23 @@
+#!/bin/bash
+
+BASEDIR="`dirname $0`/.."
+. $BASEDIR/scripts/settings.sh
+. $BASEDIR/scripts/functions
+
+cd $BASEDIR
+BASEDIR=`pwd`
+
+function generate_template {
+	[ ! -e $BASEDIR/kickstart/types/$1.ks ] && echo "Invalid template type" && exit 1
+	$BASEDIR/scripts/umount
+	$BASEDIR/scripts/install $1
+	$BASEDIR/scripts/mount
+	$BASEDIR/scripts/templatize $1
+	$BASEDIR/scripts/umount
+}
+
+[ "$1" != "" ] && generate_template $1 && exit
+
+for t in `ls -1 $BASEDIR/kickstart/types`; do
+	generate_template `echo $t | sed 's/\.ks//g'`
+done

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+SU=""
+[ "$USER" != "root" ] && SU="sudo "
+
+BASEDIR="`dirname $0`/.."
+. $BASEDIR/scripts/settings.sh
+. $BASEDIR/scripts/functions
+
+cd $BASEDIR
+BASEDIR=`pwd`
+
+TYPE=${1:-w}
+
+rm -Rf tmp
+mkdir -p $BASEDIR/tmp
+
+
+cd $BASEDIR/tmp/
+
+cat $BASEDIR/kickstart/include/base.ks > install.ks
+cat $BASEDIR/kickstart/sources/selected.ks >> install.ks
+cat $BASEDIR/kickstart/types/$TYPE.ks >> install.ks
+
+echo "$TYPE: getting initrd and vmlinuz..."
+curl -s -L -o $BASEDIR/tmp/initrd.img	$LOCATION/isolinux/initrd.img
+curl -s -L -o $BASEDIR/tmp/vmlinuz		$LOCATION/isolinux/vmlinuz
+
+
+echo -en "$TYPE: initrd repack."
+initrd_unpack	$BASEDIR/tmp/initrd.img $BASEDIR/tmp/initrd.tmp
+echo -en "."
+
+cp		$BASEDIR/tmp/install.ks			$BASEDIR/tmp/initrd.tmp/
+cp -r	$BASEDIR/kickstart/				$BASEDIR/tmp/initrd.tmp/
+echo -en "."
+
+initrd_pack		$BASEDIR/tmp/initrd.img $BASEDIR/tmp/initrd.tmp
+echo "."
+
+
+echo "$TYPE: kvm running"
+$SU qemu-kvm -no-reboot -smp 2 -m 2048 -drive if=virtio,file=$DISK,format=raw,media=disk -net nic,vlan=0,macaddr=00:aa:bb:cc:ca:fe -net tap,ifname=$TAP,vlan=0,script=no,downscript=no -initrd $BASEDIR/tmp/initrd.img -kernel $BASEDIR/tmp/vmlinuz -append "initrd=initrd.img ks=file:/install.ks repo=$LOCATION" -vnc :256

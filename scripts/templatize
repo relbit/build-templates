@@ -1,0 +1,39 @@
+#!/bin/bash
+
+SU=""
+[ "$USER" != "root" ] && SU="sudo "
+
+BASEDIR="`dirname $0`/.."
+. $BASEDIR/scripts/settings.sh
+. $BASEDIR/scripts/functions
+
+cd $BASEDIR
+BASEDIR=`pwd`
+MOUNTPOINT="$BASEDIR/tmp/mnt"
+
+TYPE=${1:-w}
+
+echo "$TYPE: running postinstall modifications"
+
+mkdir -p $BASEDIR/templates
+
+$SU tee $MOUNTPOINT/etc/fstab > /dev/null <<"EOF"
+none /dev/pts devpts rw,gid=5,mode=620 0 0
+none /dev/shm tmpfs defaults 0 0
+EOF
+
+$SU ln -sf /proc/mounts $MOUNTPOINT/etc/mtab
+
+chexec rpm -e yum-conf-sl-other
+chexec rpm -e yum-conf-sl6x
+chexec yum -q remove -y kernel*
+chexec yum -q clean all
+chexec rm -f /dev/null
+chexec mknod -m 600 /dev/console c 5 1
+
+cd $MOUNTPOINT
+
+echo "$TYPE: creating tar"
+$SU tar czf $BASEDIR/templates/scientific-6-x86_64-evia-$TYPE.tar.gz .
+
+$SU chown $USER $BASEDIR/templates/scientific-6-x86_64-evia-$TYPE.tar.gz

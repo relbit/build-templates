@@ -1,0 +1,23 @@
+#!/bin/bash
+
+SU=""
+[ "$USER" != "root" ] && SU="sudo "
+
+BASEDIR="`dirname $0`/.."
+. $BASEDIR/scripts/settings.sh
+. $BASEDIR/scripts/functions
+
+cd $BASEDIR
+BASEDIR=`pwd`
+MOUNTPOINT="$BASEDIR/tmp/mnt"
+
+mkdir -p $MOUNTPOINT
+
+mapped=`$SU kpartx -av $DISK | awk '{ print $3; }'`
+
+sleep 1;
+
+[ ! -e /dev/mapper/$mapped ] && echo "Unable to map the disk" && exit 1
+[ "`grep "$MOUNTPOINT" /proc/mounts`" != "" ] && echo "Already mounted" && exit 1
+
+$SU mount -t ext2 /dev/mapper/$mapped $MOUNTPOINT

@@ -1,0 +1,33 @@
+#!/bin/bash
+
+function initrd_unpack { # $1 = path to packed, $2 = path to unpacked
+    packed=$1
+    unpacked=$2
+
+    mv $packed ${packed}.xz
+    unxz -T2 ${packed}.xz
+
+    mkdir -p $unpacked
+    pushd $unpacked > /dev/null
+    cpio -id < $packed 2> /dev/null
+	popd > /dev/null
+}
+
+function initrd_pack { # $1 = path to packed, $2 = path to unpacked
+    packed=$1
+    unpacked=$2
+
+    pushd $unpacked > /dev/null
+    find . 2> /dev/null | cpio --create --format='newc' > $packed 2> /dev/null
+	popd > /dev/null
+    rm -Rf $unpacked
+
+    pushd `dirname $packed` > /dev/null
+    xz -T2 --format=lzma --compress $packed
+    mv ${packed}.lzma $packed
+	popd > /dev/null
+}
+
+function chexec {
+	$SU chroot $MOUNTPOINT $*
+}
