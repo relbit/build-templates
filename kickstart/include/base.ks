@@ -20,9 +20,11 @@ clearpart --all --drives=vda --initlabel
 part / --fstype=ext2 --asprimary --size=512 --grow
 
 %packages
-@Base
-@Core
-@core
+-@scalable-file-systems
+-@misc-sl
+-@office-suite
+-@internet-applications
+
 openssh-clients
 ruby
 rubygems
