@@ -27,17 +27,16 @@ curl -s -L -o $BASEDIR/tmp/initrd.img	$LOCATION/isolinux/initrd.img
 curl -s -L -o $BASEDIR/tmp/vmlinuz		$LOCATION/isolinux/vmlinuz
 
 
-echo -en "$TYPE: initrd repack."
+echo "$TYPE: initrd repack..."
 initrd_unpack	$BASEDIR/tmp/initrd.img $BASEDIR/tmp/initrd.tmp
-echo -en "."
-
 cp		$BASEDIR/tmp/install.ks			$BASEDIR/tmp/initrd.tmp/
 cp -r	$BASEDIR/kickstart/				$BASEDIR/tmp/initrd.tmp/
-echo -en "."
-
 initrd_pack		$BASEDIR/tmp/initrd.img $BASEDIR/tmp/initrd.tmp
-echo "."
 
+[ "`ip link show dev $TAP 2> /dev/null | grep $TAP`" == "" ] && $SU tunctl -t $TAP
+[ "`brctl show $BRIDGE 2> /dev/null | grep $TAP`" == "" ] && $SU brctl addif $BRIDGE $TAP
 
-echo "$TYPE: kvm running"
-$SU qemu-kvm -no-reboot -smp 2 -m 2048 -drive if=virtio,file=$DISK,format=raw,media=disk -net nic,vlan=0,macaddr=00:aa:bb:cc:ca:fe -net tap,ifname=$TAP,vlan=0,script=no,downscript=no -initrd $BASEDIR/tmp/initrd.img -kernel $BASEDIR/tmp/vmlinuz -append "initrd=initrd.img ks=file:/install.ks repo=$LOCATION" -vnc :256
+$SU ip link set up $TAP
+
+echo "$TYPE: kvm install running..."
+$SU qemu-kvm -no-reboot -smp 2 -m 2048 -drive if=virtio,file=$DISK,format=raw,media=disk -net nic,vlan=0,macaddr=00:aa:bb:cc:ca:fe -net tap,ifname=$TAP,vlan=0,script=no,downscript=no -initrd $BASEDIR/tmp/initrd.img -kernel $BASEDIR/tmp/vmlinuz -append "initrd=initrd.img ks=file:/install.ks repo=$LOCATION" -vnc :10
