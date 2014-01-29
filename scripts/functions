@@ -29,5 +29,5 @@ function initrd_pack { # $1 = path to packed, $2 = path to unpacked
 }
 
 function chexec {
-	$SU chroot $MOUNTPOINT $*
+	$SU chroot $MOUNTPOINT $* > /dev/null 2>&1
 }
