@@ -10,9 +10,9 @@ BASEDIR=`pwd`
 function generate_template {
 	[ ! -e $BASEDIR/kickstart/types/$1.ks ] && echo "Invalid template type" && exit 1
 	$BASEDIR/scripts/umount
-	$BASEDIR/scripts/install $1
-	$BASEDIR/scripts/mount
-	$BASEDIR/scripts/templatize $1
+	$BASEDIR/scripts/install $1			&& \
+	$BASEDIR/scripts/mount				&& \
+	$BASEDIR/scripts/templatize $1		&& \
 	$BASEDIR/scripts/umount
 }
 
