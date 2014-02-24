@@ -13,6 +13,7 @@ while [ "`mount | grep '/var/www/confs'`" == "" ]; do
         fi;
 done
 EOF
+chmod +x /etc/rc.local.d/10-mount-www_confs
 
 cat > /etc/rc.local.d/11-mount-www_virtual <<"EOF"
 #!/bin/bash
@@ -29,25 +30,11 @@ while [ "`mount | grep '/var/www/virtual'`" == "" ]; do
         fi;
 done
 EOF
+chmod +x /etc/rc.local.d/11-mount-www_virtual
 
-cat > /etc/rc.local.d/12-mount-sites_d <<"EOF"
-#!/bin/bash
-
-keypress=""
-echo "Waiting for filesystems: /etc/httpd/sites.d [press any key to interrupt] ... \n"
-while [ "`mount | grep '/etc/httpd/sites.d '`" == "" ]; do
-        echo -n ".";
-        mount /etc/httpd/sites.d  > /dev/null 2>&1
-        read -n 1 -t 1 keypress
-        if [ "$keypress" != "" ]; then
-            echo " interrupted."
-            break;
-        fi;
-done
-EOF
-
-cat > /etc/rc.local.d/20-start-httpd <<"EOF"
+cat > /etc/rc.local.d/30-start-httpd <<"EOF"
 #!/bin/bash
 /etc/init.d/httpd start
 EOF
+chmod +x /etc/rc.local.d/30-start-httpd
 %end

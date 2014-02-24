@@ -2,8 +2,6 @@
 haproxy
 pam_mysql
 libnss-mysql
-php
-php-zts
 %end
 
 %post

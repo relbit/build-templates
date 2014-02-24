@@ -1,7 +1,7 @@
 %packages
 httpd
-mod_fcgid
 mod_ssl
+mod_fastcgi
 %end
 
 %post
@@ -35,10 +35,10 @@ PassEnv APACHE_LOG_DIR
 
 <IfModule worker.c>
     StartServers         4
-    MaxClients         300
+    MaxClients         128
     MinSpareThreads     25
     MaxSpareThreads     75 
-    ThreadsPerChild     25
+    ThreadsPerChild     64
     MaxRequestsPerChild  0
 </IfModule>
 
@@ -278,20 +278,27 @@ BrowserMatch "^XML Spy" redirect-carefully
 BrowserMatch "^Dreamweaver-WebDAV-SCM1" redirect-carefully
 EOF
 
-cat > /etc/httpd/conf.d/fcgid.conf <<"EOF"
-LoadModule						fcgid_module modules/mod_fcgid.so
-AddHandler						fcgid-script fcg fcgi fpl
-FcgidIPCDir						/var/run/mod_fcgid
-FcgidProcessTableFile			/var/run/mod_fcgid/fcgid_shm
-AddHandler						fcgid-script .fcgi .php
-DefaultInitEnv PHPRC			"/etc/"
-MaxRequestsPerProcess			100
-MaxProcessCount					50
-IPCCommTimeout					600
-IdleTimeout						600
-MaxRequestLen					13107200
-FCGIWrapper /usr/bin/php-cgi	.php
-DirectoryIndex					index.html index.php
+cat > /etc/httpd/conf.d/fastcgi.conf <<"EOF"
+LoadModule fastcgi_module modules/mod_fastcgi.so
+
+DirectoryIndex index.php
+
+<IfModule mod_fastcgi.c>
+        <Directory /usr/sbin>
+                Options ExecCGI FollowSymLinks
+                SetHandler fastcgi-script
+                Order allow,deny
+                Allow from all
+        </Directory>
+        <LocationMatch "/fpm-status">
+                SetHandler php-fastcgi-virt
+                Action php-fastcgi-virt /usr/sbin/php-fpm.fcgi virtual
+        </LocationMatch>
+
+        AddType application/x-httpd-php .php
+        Action application/x-httpd-php /php.fcgi
+</IfModule>
+
 EOF
 
 cat > /etc/sysconfig/httpd <<"EOF"
