@@ -187,7 +187,6 @@ apc.user_ttl=360
 apc.gc_ttl=360
 apc.cache_by_default=1
 apc.filters
-apc.mmap_file_mask=/dev/zero
 apc.file_update_protection=2
 apc.enable_cli=0
 apc.max_file_size=1M

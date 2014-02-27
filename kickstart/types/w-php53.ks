@@ -3,10 +3,10 @@
 %include /kickstart/include/nscd.ks
 %include /kickstart/include/nss-mysql.ks
 %include /kickstart/include/mysql-client.ks
-%include /kickstart/include/php53.ks
-%include /kickstart/include/php53-fpm.ks
 %include /kickstart/include/rc.local.d.ks
 %include /kickstart/include/rc.local.d-customer.ks
+%include /kickstart/include/php53.ks
+%include /kickstart/include/php53-fpm.ks
 %include /kickstart/include/root-bashrc.ks
 
 %post

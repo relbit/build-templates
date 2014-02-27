@@ -5,6 +5,7 @@ mod_fastcgi
 %end
 
 %post
+mkdir -p /var/www/virtual
 mkdir -p /etc/httpd/conf
 mkdir -p /etc/httpd/conf.d
 mkdir -p /etc/httpd/sites.d
@@ -304,6 +305,24 @@ EOF
 cat > /etc/sysconfig/httpd <<"EOF"
 HTTPD=/usr/sbin/httpd.worker
 export APACHE_LOG_DIR=/var/log/httpd
+EOF
+
+cat > /etc/logrotate.d/httpd <<"EOF"
+/var/log/httpd/access_log
+/var/log/httpd/ssl_access_log
+/var/log/httpd/error_log
+/var/log/httpd/ssl_error_log
+/var/log/httpd/ssl_request_log
+/var/log/httpd/suexec.log {
+    weekly
+    missingok
+    notifempty
+    sharedscripts
+    dateext
+    rotate 1
+    postrotate
+        /sbin/service httpd reload > /dev/null 2>/dev/null || true
+    endscript
 EOF
 
 %end

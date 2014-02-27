@@ -1,12 +1,11 @@
 %include /kickstart/include/base.ks
 %include /kickstart/include/httpd.ks
 %include /kickstart/include/nscd.ks
-%include /kickstart/include/php.ks
-%include /kickstart/include/php-ioncube.ks
+%include /kickstart/include/php53.ks
+%include /kickstart/include/php53-fpm.ks
 %include /kickstart/include/root-bashrc.ks
 
 %packages
-php-fpm
 mod_fastcgi
 %end
 

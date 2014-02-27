@@ -1,1 +1,1 @@
-%include /kickstart/types/w.ks
+%include /kickstart/types/w-php53.ks

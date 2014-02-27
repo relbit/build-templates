@@ -52,5 +52,8 @@ dstat
 -xorg-x11-drv*
 -yum-autoupdate
 
+sendmail
+sendmail-cf
+
 %end
 
