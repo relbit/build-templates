@@ -38,8 +38,8 @@ chexec mknod -m 600 /dev/console c 5 1
 cd $MOUNTPOINT
 
 echo "$TYPE: creating tar..."
-$SU tar cf $BASEDIR/templates/scientific-6-x86_64-evia-$TYPE.tar .
-$SU pigz -f $BASEDIR/templates/scientific-6-x86_64-evia-$TYPE.tar
+$SU tar --numeric-owner -cf - . | \
+	$SU pigz -f $BASEDIR/templates/scientific-6-x86_64-evia-$TYPE.tar
 
 $SU chown $USER $BASEDIR/templates/scientific-6-x86_64-evia-$TYPE.tar.gz
 
