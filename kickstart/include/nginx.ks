@@ -49,7 +49,7 @@ http {
     gzip_disable "MSIE [1-6]\.(?!.*SV1)";
     gzip_types application/x-javascript text/css text/javascript;
 
-    client_header_buffer_size 8m;
+    client_header_buffer_size 4k;
     large_client_header_buffers 8 8m;    
 
     include /etc/nginx/conf.d/*.conf;
