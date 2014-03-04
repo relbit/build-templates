@@ -323,6 +323,7 @@ cat > /etc/logrotate.d/httpd <<"EOF"
     postrotate
         /sbin/service httpd reload > /dev/null 2>/dev/null || true
     endscript
+}
 EOF
 
 %end
