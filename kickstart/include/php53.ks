@@ -3,6 +3,7 @@ php53-devel
 php53-common
 php53-pecl-APC
 php53-pecl-memcache
+php53-pecl-mongo
 php53-pecl-suhosin
 php53-pecl-turbo_realpath
 php53-extra-ioncube
