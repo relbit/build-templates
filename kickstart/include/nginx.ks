@@ -52,6 +52,10 @@ http {
     client_header_buffer_size 4k;
     large_client_header_buffers 8 8m;    
 
+    proxy_connect_timeout       90;
+    proxy_send_timeout          90;
+    proxy_read_timeout          900;
+
     include /etc/nginx/conf.d/*.conf;
     include /etc/nginx/sites-enabled/*;
 }
