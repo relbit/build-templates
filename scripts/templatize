@@ -39,7 +39,7 @@ cd $MOUNTPOINT
 
 echo "$TYPE: creating tar..."
 $SU tar --numeric-owner -cf - . | \
-	$SU pigz -f > $BASEDIR/templates/scientific-6-x86_64-evia-$TYPE.tar
+	$SU pigz -f > $BASEDIR/templates/scientific-6-x86_64-evia-$TYPE.tar.gz
 
 $SU chown $USER $BASEDIR/templates/scientific-6-x86_64-evia-$TYPE.tar.gz
 
