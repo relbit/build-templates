@@ -37,9 +37,7 @@ dstat
 -device-mapper*
 -dhcp-common*
 -eject
--*firmware*
 -grub*
--kernel*
 -kpartx
 -lvm2*
 -man
