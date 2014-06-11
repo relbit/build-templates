@@ -26,9 +26,7 @@ $SU ln -sf /proc/mounts $MOUNTPOINT/etc/mtab
 
 chexec rpm -e yum-conf-sl-other
 chexec rpm -e yum-conf-sl6x
-chexec yum -q remove -y kernel*
-chexec yum -q remove -y *firmware*
-chexec yum -q remove -y device-mapper*
+chexec yum -q remove -y kernel* *firmware* device-mapper* dracut* usermode pciutils* wireless-tools crda b43* alsa* hdparm mdadm virt-what microcode_ctl quota smartmontools ledmon acpid iw busybox selinux-policy authconfig blktrace
 chexec yum -q clean all
 chexec rm -Rf /var/cache/yum
 chexec mkdir -p /var/cache/yum
