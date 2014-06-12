@@ -14,9 +14,10 @@ yum remove -y sendmail sendmail-cf
 /usr/sbin/useradd -c "Virtual Mail User" -u 250 -s /sbin/nologin -r -d /var/vmail vmail
 
 chkconfig postfix	 off
+chkconfig postgrey	 off
 chkconfig spamassassin	 off
 chkconfig spamass-milter off
-chkconfig postgrey	 off
+chkconfig dovecot	 off
 
 mkdir -p /var/vmail
 chown vmail:vmail /var/vmail
